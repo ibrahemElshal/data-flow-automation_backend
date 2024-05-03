@@ -18,7 +18,10 @@ const successStoriesRouter=require('./server/router/successStoriesRouter');
 const projectsRouter=require('./server/router/projectsRouter')
 const userRouter=require('./server/router/userRouter');
 const staffRouter=require('./server/router/staffRouter');
-const formsRouter=require('./server/router/formsRouter')
+const formsRouter=require('./server/router/formsRouter');
+const formsRouterV2=require('./server/router/formsRouterV2');
+
+
 
 
 const app=express();
@@ -52,6 +55,8 @@ app.use('/api/v1/projects',projectsRouter);
 app.use('/api/v1/users',userRouter);
 app.use('/api/v1/staff',staffRouter);
 app.use('/api/v1/forms',formsRouter);
+app.use('/api/v1/formsV2',formsRouterV2);
+
 
 //app.use('/',router);
 
