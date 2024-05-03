@@ -45,8 +45,8 @@ app.listen(PORT,()=>{
     console.log(`server is up succesfully on http://localhost:${PORT}`)
 });
 
-app.get('*',checkUser);
-app.use('/',authRoutes);
+//app.get('*',checkUser);
+//app.use('/',authRoutes);
 app.use('/api/v1/externalTrainings',externalTrainingRouter);
 app.use('/api/v1/internalTrainings',internalTrainingRouter);
 app.use('/api/v1/competitions',competetionsRouter);

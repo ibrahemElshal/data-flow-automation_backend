@@ -135,11 +135,23 @@ const createForm=async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
+  const getAllForms=async (req, res) => {
+    try {
+      // Find all forms
+      const forms = await FormV2.find();
+  
+      res.json(forms);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
   module.exports={
     createForm,
     forwardForm,
     downloadForm,
     deleteForm,
-    assignedForms
+    assignedForms,
+    getAllForms
   }
   

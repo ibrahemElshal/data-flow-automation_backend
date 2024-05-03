@@ -11,7 +11,7 @@ required: true
 },
 submittedBy: {
 type: mongoose.Schema.Types.ObjectId,
-ref: 'Student', // Assuming you have a 'Student' model
+ref: 'user', // Assuming you have a 'Student' model
 required: true
 },
 submittedAt: {

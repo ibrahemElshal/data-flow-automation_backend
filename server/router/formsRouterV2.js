@@ -6,12 +6,16 @@ const {createForm ,//
     forwardForm,//
     downloadForm,
     deleteForm,
-    assignedForms}=require('../controllers/formsControllerV2');
+    assignedForms,
+    getAllForms
+}=require('../controllers/formsControllerV2');
 
 router.post('/createform',createForm);
-router.get('/',assignedForms);
+router.get('/',getAllForms);
 router.put('/forward/:formId',forwardForm);
 router.get('/pdf/:formId',downloadForm);
+router.get('/staff/:userId',assignedForms);
+
 
 
 module.exports=router
