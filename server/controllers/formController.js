@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Form = require('../models/form');
+const Form = require('../models/formsModel');
 const fs=require('fs');
 const path=require('path');
 

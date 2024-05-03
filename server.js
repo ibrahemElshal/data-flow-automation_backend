@@ -17,6 +17,8 @@ const competetionsRouter=require('./server/router/competetionsRouter');
 const successStoriesRouter=require('./server/router/successStoriesRouter');
 const projectsRouter=require('./server/router/projectsRouter')
 const userRouter=require('./server/router/userRouter');
+const staffRouter=require('./server/router/staffRouter');
+const formsRouter=require('./server/router/formsRouter')
 
 
 const app=express();
@@ -43,13 +45,13 @@ app.listen(PORT,()=>{
 app.get('*',checkUser);
 app.use('/',authRoutes);
 app.use('/api/v1/externalTrainings',externalTrainingRouter);
-app.use('/api/v1/internalTrainings',internalTrainingRouter)
+app.use('/api/v1/internalTrainings',internalTrainingRouter);
 app.use('/api/v1/competitions',competetionsRouter);
-app.use('/api/v1/successStories',successStoriesRouter)
-app.use('/api/v1/projects',projectsRouter)
-app.use('/api/v1/users',userRouter)
-
-
+app.use('/api/v1/successStories',successStoriesRouter);
+app.use('/api/v1/projects',projectsRouter);
+app.use('/api/v1/users',userRouter);
+app.use('/api/v1/staff',staffRouter);
+app.use('/api/v1/forms',formsRouter);
 
 //app.use('/',router);
 

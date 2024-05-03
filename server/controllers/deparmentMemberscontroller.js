@@ -23,6 +23,9 @@ const getDepartmentMember=async(req,res)=>{
     res.status(500).json({ message: 'Server Error' });
   }
 }
+const updateStaffProfile=async(req,res)=>{
+  
+}
 module.exports={
     getDepartmentMembers,
     getDepartmentMember
