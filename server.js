@@ -91,10 +91,15 @@ app.use('/api/v1/formsV2',formsRouterV2);
 // app.use('/',authRoutes);
 //here there is sign up 2
 app.use('/api/v2/externalTrainings', externalTrainingRouterV2);
+
 app.use('/api/v2/internalTrainings',internalTrainingRouterV2);
+
 app.use('/api/v2/successStories',successStoriesRouterV2);
+
 app.use('/api/v2/competitions',competetionsRouterV2);
+
 app.use('/api/v2/projects',projectsRouterV2);
+
 app.use('/api/v2/staff',staffRouterV2);
 
 

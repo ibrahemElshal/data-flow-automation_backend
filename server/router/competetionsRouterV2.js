@@ -43,35 +43,48 @@ router.get('/:id',async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   })
-router.put('/:id',upload.single('competitionPic'),async (req, res) => {
+  router.put('/:id', upload.single('competitionPic'), async (req, res) => {
     try {
-      const competition = await Competition.findById(req.params.id);
-      if (!competition) {
-        return res.status(404).json({ message: 'Competition not found' });
-      }
-      if (req.body.title) {
-        competition.title = req.body.title;
-      }
-      if (req.body.description) {
-        competition.description = req.body.description;
-      }
-      if (req.body.link) {
-        competition.link = req.body.link;
-      }
-      await competition.save();
-      res.json(competition);
+        const competition = await Competition.findById(req.params.id);
+        if (!competition) {
+            return res.status(404).json({ message: 'Competition not found' });
+        }
+
+        // Handle competition picture upload
+        if (req.file) {
+            const result = await cloudinary.uploader.upload(req.file.path);
+            competition.competitionPic = {
+                public_id: result.public_id,
+                secure_url: result.secure_url
+            };
+        }
+
+        // Update other fields if provided in the request body
+        if (req.body.title) {
+            competition.title = req.body.title;
+        }
+        if (req.body.description) {
+            competition.description = req.body.description;
+        }
+        if (req.body.link) {
+            competition.link = req.body.link;
+        }
+
+        await competition.save();
+        res.json(competition);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
-  });
+});
+
 router.delete('/:id',async (req, res) => {
     try {
-      const competition = await Competition.findById(req.params.id);
+      // const internalTraining = await InternalTraining.findByIdAndDelete(req.params.id);
+      const competition = await Competition.findByIdAndDelete(req.params.id);
       if (!competition) {
         return res.status(404).json({ message: 'Competition not found' });
       }
       await cloudinary.uploader.destroy(competition.competitionPic.public_id);
-      await competition.remove();
       res.json({ message: 'Competition deleted' });
     } catch (error) {
       res.status(500).json({ message: error.message });

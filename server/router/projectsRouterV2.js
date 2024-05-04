@@ -1,6 +1,8 @@
 const express=require('express');
 const router=express.Router();
 const upload=require('../middlewares/upload');
+const cloudinary=require('../utlis/cloudinary');
+const Project=require('../models/projectsV2')
 const {createProject,
     getProjects,
     getProjectById,
@@ -87,7 +89,7 @@ router.put('/:id', upload.fields([
       }
   
       // Handle file uploads if any
-      if (req.files['mainPic']) {
+      if (req.files && req.files['mainPic']) {
         const mainPicResult = await cloudinary.uploader.upload(req.files['mainPic'][0].path);
         project.mainPic = {
           public_id: mainPicResult.public_id,
@@ -95,7 +97,7 @@ router.put('/:id', upload.fields([
         };
       }
   
-      if (req.files['additionalPictures']) {
+      if (req.files &&req.files['additionalPictures']) {
         const additionalPicturesResults = await Promise.all(req.files['additionalPictures'].map(async (file) => {
           return await cloudinary.uploader.upload(file.path);
         }));
@@ -107,7 +109,7 @@ router.put('/:id', upload.fields([
         });
       }
   
-      if (req.files['teamMembers']) {
+      if (req.files && req.files['teamMembers']) {
         const teamMembersResults = await Promise.all(req.files['teamMembers'].map(async (file) => {
           return await cloudinary.uploader.upload(file.path);
         }));
@@ -142,7 +144,7 @@ router.put('/:id', upload.fields([
 // DELETE route to delete a project by ID
 router.delete('/:id', async (req, res) => {
     try {
-      const project = await Project.findById(req.params.id);
+      const project = await Project.findByIdAndDelete(req.params.id);
       if (!project) {
         return res.status(404).json({ message: 'Project not found' });
       }

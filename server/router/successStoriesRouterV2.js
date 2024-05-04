@@ -156,30 +156,48 @@ router.post('/',upload.fields([{ name: 'mainPicture', maxCount: 1 }, { name: 'ad
     }
   });
   
-router.delete(':id',async (req, res, next) => {
+  router.delete('/:id', async (req, res, next) => {
     try {
-      const deletedSuccessStory = await SuccessStory.findByIdAndDelete(req.params.id);
-      if (!deletedSuccessStory) {
-        return res.status(404).json({ error: 'Success story not found' });
-      }
-      // Delete the main picture from Cloudinary
-      await cloudinary.uploader.destroy(deletedSuccessStory.mainPicture.public_id);
-      // Delete the additional pictures from Cloudinary
-      for (const picture of deletedSuccessStory.additionalPictures) {
-        await cloudinary.uploader.destroy(picture.public_id);
-      }
-      // Delete the team member pictures from Cloudinary
-      for (const member of deletedSuccessStory.teamMembers) {
-        await cloudinary.uploader.destroy(member.picture.public_id);
-      }
-      // Delete the video from Cloudinary
-      await cloudinary.uploader.destroy(deletedSuccessStory.video.public_id, {
-        resource_type: 'video'
-      });
-      res.json({ message: 'Success story deleted successfully' });
-    } catch (err) {
-      next(err);
+        const deletedSuccessStory = await SuccessStory.findByIdAndDelete(req.params.id);
+        if (!deletedSuccessStory) {
+            return res.status(404).json({ error: 'Success story not found' });
+        }
+
+        // Delete main picture from Cloudinary
+        if (deletedSuccessStory.mainPicture && deletedSuccessStory.mainPicture.public_id) {
+            await cloudinary.uploader.destroy(deletedSuccessStory.mainPicture.public_id);
+        }
+
+        // Delete additional pictures from Cloudinary
+        if (deletedSuccessStory.additionalPictures && deletedSuccessStory.additionalPictures.length > 0) {
+            await Promise.all(deletedSuccessStory.additionalPictures.map(async (picture) => {
+                if (picture && picture.public_id) {
+                    await cloudinary.uploader.destroy(picture.public_id);
+                }
+            }));
+        }
+
+        // Delete team member pictures from Cloudinary
+        if (deletedSuccessStory.teamMembers && deletedSuccessStory.teamMembers.length > 0) {
+            await Promise.all(deletedSuccessStory.teamMembers.map(async (member) => {
+                if (member.picture && member.picture.public_id) {
+                    await cloudinary.uploader.destroy(member.picture.public_id);
+                }
+            }));
+        }
+
+        // Delete video from Cloudinary
+        if (deletedSuccessStory.video && deletedSuccessStory.video.public_id) {
+            await cloudinary.uploader.destroy(deletedSuccessStory.video.public_id, {
+                resource_type: 'video'
+            });
+        }
+
+        res.json({ message: 'Success story deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        next(error); // Pass the error to the error handling middleware
     }
-  });
+});
 
 module.exports=router;
