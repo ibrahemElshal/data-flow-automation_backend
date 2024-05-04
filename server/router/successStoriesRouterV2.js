@@ -82,14 +82,16 @@ router.post('/',upload.fields([{ name: 'mainPicture', maxCount: 1 }, { name: 'ad
       next(err);
     }
   });
-router.put('/:id',async (req, res, next) => {
+  router.put('/:id', async (req, res, next) => {
     try {
-      const mainPictureResult = req.files['mainPicture']
+      // Handle cases where req.files is undefined
+      const mainPictureResult = req.files && req.files['mainPicture']
         ? await cloudinary.uploader.upload(req.files['mainPicture'][0].path)
         : null;
-
+  
+      // Handle cases where req.files['additionalPictures'] is undefined
       const additionalPicturesResults = await Promise.all(
-        (req.files['additionalPictures'] || []).map(async (file) => {
+        (req.files && req.files['additionalPictures'] || []).map(async (file) => {
           const result = await cloudinary.uploader.upload(file.path);
           return {
             public_id: result.public_id,
@@ -97,9 +99,10 @@ router.put('/:id',async (req, res, next) => {
           };
         })
       );
-
+  
+      // Handle cases where req.files['teamMemberPicture'] is undefined
       const teamMemberPicturesResults = await Promise.all(
-        (req.files['teamMemberPicture'] || []).map(async (file) => {
+        (req.files && req.files['teamMemberPicture'] || []).map(async (file) => {
           const result = await cloudinary.uploader.upload(file.path);
           return {
             public_id: result.public_id,
@@ -107,17 +110,19 @@ router.put('/:id',async (req, res, next) => {
           };
         })
       );
-
-      const videoResult = req.files['video']
+  
+      // Handle cases where req.files['video'] is undefined
+      const videoResult = req.files && req.files['video']
         ? await cloudinaryUploadVideo(req.files['video'][0].path, {
             resource_type: 'video'
           })
         : null;
-
+  
       const updatedSuccessStory = await SuccessStory.findByIdAndUpdate(
         req.params.id,
         {
           ...req.body,
+          // Ensure mainPictureResult is defined before accessing its properties
           mainPicture: mainPictureResult
             ? {
                 public_id: mainPictureResult.public_id,
@@ -125,19 +130,23 @@ router.put('/:id',async (req, res, next) => {
               }
             : undefined,
           additionalPictures: additionalPicturesResults,
+          // Ensure videoResult is defined before accessing its properties
           video: videoResult
             ? {
                 public_id: videoResult.public_id,
                 secure_url: videoResult.secure_url
               }
             : undefined,
-          teamMembers: req.body.teamMembers.map((member, index) => ({
+          // Map through req.body.teamMembers only if it's an array
+          teamMembers: Array.isArray(req.body.teamMembers) ? req.body.teamMembers.map((member, index) => ({
             ...member,
+            // Ensure teamMemberPicturesResults[index] is defined before accessing its properties
             picture: teamMemberPicturesResults[index] || {}
-          }))
+          })) : []
         },
         { new: true }
       );
+  
       if (!updatedSuccessStory) {
         return res.status(404).json({ error: 'Success story not found' });
       }
@@ -146,9 +155,10 @@ router.put('/:id',async (req, res, next) => {
       next(err);
     }
   });
+  
 router.delete(':id',async (req, res, next) => {
     try {
-      const deletedSuccessStory = await SuccessStory.findByIdAndRemove(req.params.id);
+      const deletedSuccessStory = await SuccessStory.findByIdAndDelete(req.params.id);
       if (!deletedSuccessStory) {
         return res.status(404).json({ error: 'Success story not found' });
       }
