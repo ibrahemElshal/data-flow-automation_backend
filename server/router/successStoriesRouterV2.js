@@ -79,6 +79,7 @@ router.post('/',upload.fields([{ name: 'mainPicture', maxCount: 1 }, { name: 'ad
       await newSuccessStory.save();
       res.status(201).json(newSuccessStory);
     } catch (err) {
+      res.json(err.message);
       next(err);
     }
   });
