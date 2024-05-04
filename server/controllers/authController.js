@@ -80,7 +80,7 @@ module.exports.signup_postV2 = async (req, res) => {
     console.log('signed up successfully');
   }
   catch(err) {
-    const errors = handleErrors(err);
+    console.log(err);
     res.status(400).json({ errors });
   }
  
