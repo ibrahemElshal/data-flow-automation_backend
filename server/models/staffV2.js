@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-
-// Reference Schema from mongoose
 const Schema = mongoose.Schema;
 
 const staffSchema = new Schema({
@@ -9,16 +7,16 @@ const staffSchema = new Schema({
       ref: 'user'
     },
     profilePicture: {
-      type: String,
-      default: null
+        public_id: { type: String },
+        secure_url: { type: String }
     },
     brief: {
       type: String,
       default: null
     },
     researchPapers: [{
-      type: [String],
-      default: null
+        public_id: { type: String },
+        secure_url: { type: String }
     }],
     subjectHistory: [{
       subjectCode: {
@@ -32,5 +30,5 @@ const staffSchema = new Schema({
     }]
 });
 
-const Staff = mongoose.model('staff', staffSchema);
+const Staff = mongoose.model('staffV2', staffSchema);
 module.exports = Staff;

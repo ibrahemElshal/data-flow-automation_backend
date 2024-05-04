@@ -10,7 +10,7 @@ const {createSuccessStory,
 router.get('/',getSuccessStories);
 router.get('/:id',getSuccessStoryById);
 router.post('/',upload.fields([{ name: 'mainPicture', maxCount: 1 }, { name: 'additionalPictures', maxCount: 10 }, { name: 'video', maxCount: 1 }, { name: 'teamMembersPictures', maxCount: 10 }]),createSuccessStory);
-router.put('/:id',updateSuccessStory);
+router.put('/:id',upload.fields([{ name: 'mainPicture', maxCount: 1 }, { name: 'additionalPictures', maxCount: 10 }, { name: 'video', maxCount: 1 }, { name: 'teamMembersPictures', maxCount: 10 }]),updateSuccessStory);
 router.delete(':id',deleteSuccessStory);
 
 module.exports=router;

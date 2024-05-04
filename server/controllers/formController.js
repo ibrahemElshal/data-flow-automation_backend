@@ -95,10 +95,21 @@ const getPendingProjects=async (req, res) => {
     }
 
   }
+  const getAllForms=async (req, res) => {
+    try {
+      const forms = await Form.find();
+      res.json(forms);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+  
 
 module.exports={
     createForm,
     getPendingProjects,
     forwardForm,
-    downloadForm
+    downloadForm,
+    getAllForms,
+    
 }

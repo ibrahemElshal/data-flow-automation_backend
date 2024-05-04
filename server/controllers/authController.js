@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const Staff = require('../models/staff');
+const StaffV2 = require('../models/staffV2');
+
 const jwt = require('jsonwebtoken');
 require('dotenv');
 // handle errors
@@ -62,7 +64,27 @@ module.exports.signup_post = async (req, res) => {
   }
  
 }
+module.exports.signup_postV2 = async (req, res) => {
+  const { id,name,email,role, password ,slug} = req.body; 
 
+  try {
+    const user = await User.create({  id,name,email,role, password ,slug });
+    if( role==='staff' || role==='head'){
+      const staff = new StaffV2({ user: user._id });
+      await staff.save();
+      console.log('staff signed up sucessfully')
+    }
+    const token = createToken(user._id,user.role);
+    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+    res.status(201).json({ user: user._id });
+    console.log('signed up successfully');
+  }
+  catch(err) {
+    const errors = handleErrors(err);
+    res.status(400).json({ errors });
+  }
+ 
+}
 module.exports.login_post = async (req, res) => {
   const { id, password } = req.body; // Changed from email to id
 
