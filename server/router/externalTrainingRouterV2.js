@@ -87,7 +87,7 @@ router.put('/:id', upload.single('trainingPic'), async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    const deletedTraining = await ExternalTraining.findByIdAndRemove(req.params.id);
+    const deletedTraining = await ExternalTraining.findByIdAndDelete(req.params.id);
     if (!deletedTraining) {
       return res.status(404).json({ error: 'Training not found' });
     }
