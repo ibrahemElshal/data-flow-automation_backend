@@ -8,17 +8,14 @@ const path=require('path');
 // POST endpoint to handle form submission with file upload
 const createForm= async (req, res) => {
   try {
-    const { userId, subject, description } = req.body;
+    const { userId, subject, description ,pdf} = req.body;
 
     // Create a new form instance
     const newForm = new Form({
       userId,
       subject,
       description,
-      pdf: {
-        data: req.file.buffer,
-        contentType: req.file.mimetype
-      }
+      pdf
     });
 
     // Save the form to the database

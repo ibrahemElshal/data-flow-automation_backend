@@ -16,7 +16,7 @@ const formSchema = new Schema({
     default:null
   },
   pdf: {
-    data: Buffer, // Store binary data of the PDF file
+    data: String, // Store binary data of the PDF file
     contentType: String // Store content type of the file (e.g., 'application/pdf')
   },
   status: {
