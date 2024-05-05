@@ -34,7 +34,7 @@ const getPendingProjects=async (req, res) => {
   
       // Find forms where the status is 'pending' and the staff member is assigned to handle it
       const formsToHandle = await Form.find({ status: 'pending', handledBy: staffId })
-        .populate('userId', 'name') // Populate user details (only name) for each form
+        .populate('userId') // Populate user details (only name) for each form
         .exec();
   
       res.status(200).json(formsToHandle);
@@ -43,10 +43,10 @@ const getPendingProjects=async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
   };
-  const forwardForm=async (req, res) => {
+  const forwardForm = async (req, res) => {
     try {
       const formId = req.params.formId;
-      const { staffId } = req.body; // Assuming staff ID is provided in the request body
+      const { handledBy } = req.body; // Assuming staff ID is provided in the request body
   
       // Find the form by ID
       const form = await Form.findById(formId);
@@ -56,17 +56,19 @@ const getPendingProjects=async (req, res) => {
       }
   
       // Update the 'handledBy' field with the staff ID
-      form.handledBy = staffId;
+      form.handledBy = handledBy;
+      console.log(form);
   
       // Save the updated form
-      await form.save();
+      const updatedForm = await form.save();
   
-      res.status(200).json(form);
+      res.status(200).json(updatedForm); // Return the updated form in the response
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Server error' });
     }
-  }
+  };
+  
   const downloadForm=async (req, res,next) => {
     const formId=req.params.formId;
     const formFile=Form.findById(formId);
@@ -100,6 +102,22 @@ const getPendingProjects=async (req, res) => {
       res.status(500).json({ message: err.message });
     }
   };
+  const  getPendingProjectsById = async (req, res) => {
+    try {
+      // Retrieve the staff member's ID from the request parameters
+      const staffId = req.params.staffId;
+  
+      // Find forms where the status is 'pending' and the staff member is assigned to handle it
+      const formsToHandle = await Form.find({ status: 'pending', handledBy: staffId })
+        .populate('userId') // Populate user details (only name) for each form
+        .exec();
+  
+      res.status(200).json(formsToHandle);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  };
   
 
 module.exports={
@@ -108,5 +126,6 @@ module.exports={
     forwardForm,
     downloadForm,
     getAllForms,
+    getPendingProjectsById
     
 }
