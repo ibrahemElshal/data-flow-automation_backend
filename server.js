@@ -101,6 +101,8 @@ app.use('/api/v2/competitions',competetionsRouterV2);
 app.use('/api/v2/projects',projectsRouterV2);
 
 app.use('/api/v2/staff',staffRouterV2);
+app.use('/api/v2/users',userRouter);
+
 
 
 

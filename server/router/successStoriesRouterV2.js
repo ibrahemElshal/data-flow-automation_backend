@@ -24,7 +24,7 @@ router.get('/:id',async (req, res, next) => {
       next(err);
     }
   });
-router.post('/',upload.fields([{ name: 'mainPicture', maxCount: 1 }, { name: 'additionalPictures', maxCount: 10 }, { name: 'video', maxCount: 1 }, { name: 'teamMembersPictures', maxCount: 10 }]), async (req, res, next) => {
+  router.post('/',upload.fields([{ name: 'mainPicture', maxCount: 1 }, { name: 'additionalPictures', maxCount: 10 }, { name: 'video', maxCount: 1 }, { name: 'teamMembersPictures', maxCount: 10 }]), async (req, res, next) => {
     try {
       const mainPictureResult = req.files['mainPicture']
         ? await cloudinary.uploader.upload(req.files['mainPicture'][0].path)
@@ -41,7 +41,7 @@ router.post('/',upload.fields([{ name: 'mainPicture', maxCount: 1 }, { name: 'ad
       );
 
       const teamMemberPicturesResults = await Promise.all(
-        (req.files['teamMemberPictures'] || []).map(async (file) => {
+        (req.files['teamMembersPictures'] || []).map(async (file) => {
           const result = await cloudinary.uploader.upload(file.path);
           return {
             public_id: result.public_id,
