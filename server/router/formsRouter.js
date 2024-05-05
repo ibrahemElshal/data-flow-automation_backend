@@ -6,7 +6,7 @@ const {createForm,getPendingProjects,forwardForm,downloadForm,getAllForms,getPen
 
 router.post('/createform',upload.single('pdf'),createForm);
 router.get('/formsToHandle',getPendingProjects);
-router.get('/formsToHandle:id',getPendingProjectsById);
+router.get('/formsToHandle/:staffId',getPendingProjectsById);
 
 router.put('/forward/:formId',forwardForm);
 router.get('/download/:formId',downloadForm);
