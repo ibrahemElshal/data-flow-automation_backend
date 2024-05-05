@@ -158,7 +158,6 @@ router.delete('/:id', async (req, res) => {
         await cloudinary.uploader.destroy(teamMember.pic.public_id);
       }));
   
-      await project.remove();
       res.json({ message: 'Project deleted' });
     } catch (error) {
       res.status(500).json({ message: error.message });
