@@ -94,9 +94,9 @@ const getPendingProjects=async (req, res) => {
     }
 
   }
-  const getAllForms=async (req, res) => {
+  const getAllForms = async (req, res) => {
     try {
-      const forms = await Form.find();
+      const forms = await Form.find().populate('userId');
       res.json(forms);
     } catch (err) {
       res.status(500).json({ message: err.message });
