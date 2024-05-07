@@ -58,7 +58,7 @@ router.get('/download/pdf/:formId', async (req, res) => {
       res.send(pdfBuffer);
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(500).json({ error: `${err}` });
     }
   });
   
