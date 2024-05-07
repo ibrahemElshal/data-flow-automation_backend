@@ -48,7 +48,8 @@ router.get('/download/pdf/:formId', async (req, res) => {
   
       pdf.create(htmlContent, options).toStream((err, stream) => {
         if (err) {
-          return res.status(500).json({ message: 'Error generating PDF' });
+            console.log(err)
+            return res.status(500).json({ message: `${err}` });
         }
   
         res.setHeader('Content-Type', 'application/pdf');
