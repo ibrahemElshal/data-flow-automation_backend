@@ -2,7 +2,7 @@ const express=require('express');
 const router=express.Router();
 const upload=require('../middlewares/upload');
 const Form = require('../models/formsModel');
-const pdf = require('html-pdf');
+const puppeteer = require('puppeteer');
 const fs = require('fs');
 
 
@@ -19,14 +19,14 @@ router.get('/download/pdf/:formId', async (req, res) => {
       const form = await Form.findById(formId).populate('userId', 'id name role');
   
       if (!form) {
-        return res.status(404).json({ message: 'Form not found' });
+        return res.status(404).json({ error: 'Form not found' });
       }
   
       const userId = form.userId.id;
       const name = form.userId.name;
       const role = form.userId.role;
       const subject = form.subject;
-      const description = form.description;
+      const description = form.description || 'No description provided';
   
       const htmlContent = `
         <h1>${subject}</h1>
@@ -36,32 +36,32 @@ router.get('/download/pdf/:formId', async (req, res) => {
         <p>Description: ${description}</p>
       `;
   
-      const options = {
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
+  
+      await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+  
+      const pdfBuffer = await page.pdf({
         format: 'A4',
-        border: {
+        margin: {
           top: '0.5in',
           right: '0.5in',
           bottom: '0.5in',
           left: '0.5in',
         },
-      };
-  
-      pdf.create(htmlContent, options).toStream((err, stream) => {
-        if (err) {
-            console.log(err)
-            return res.status(500).json({ message: `${err}` });
-        }
-  
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename=form.pdf');
-  
-        stream.pipe(res);
       });
+  
+      await browser.close();
+  
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=${subject}.pdf`);
+      res.send(pdfBuffer);
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: 'Internal server error' });
+      res.status(500).json({ error: 'Internal server error' });
     }
   });
+  
 router.get('/',getAllForms);
 
 
